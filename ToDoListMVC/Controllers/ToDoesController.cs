@@ -30,6 +30,15 @@ namespace ToDoListMVC.Controllers
             return View(toDosList);
         }
 
+        public ActionResult BuildToDoTable()
+        {
+            string currentUserId = User.Identity.GetUserId();
+            var currentUser = _context.Users.FirstOrDefault(x => x.Id == currentUserId);
+            var toDosList = _context.ToDos.ToList().Where(x => x.User == currentUser);
+
+            return PartialView("_toDoTable", toDosList);
+        }
+
         // GET: ToDoes/Details/{id}
         public ActionResult Details(int? id)
         {
