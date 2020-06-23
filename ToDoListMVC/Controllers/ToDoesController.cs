@@ -65,6 +65,22 @@ namespace ToDoListMVC.Controllers
             return View(toDo);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AJAXCreate([Bind(Include = "Id,Description")] ToDo toDo)
+        {
+            if (ModelState.IsValid)
+            {
+                string currentUserId = User.Identity.GetUserId();
+                var currentUser = _context.Users.FirstOrDefault(x => x.Id == currentUserId);
+                toDo.User = currentUser;
+                toDo.IsDone = false;
+                _context.ToDos.Add(toDo);
+                _context.SaveChanges();
+            }
+            return PartialView("_toDoTable", GetUserToDos());
+        }
+
         public ActionResult Edit(int? id)
         {
             if (id == null)

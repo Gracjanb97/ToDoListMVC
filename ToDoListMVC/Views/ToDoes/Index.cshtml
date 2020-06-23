@@ -1,19 +1,32 @@
-﻿@model IEnumerable<ToDoListMVC.Models.ToDo>
+﻿@model ToDoListMVC.Models.ToDo
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-
 <div id="ToDoTable"></div>
+<div id="ToDoCreateForm">
+    @using (Ajax.BeginForm("AJAXCreate", "ToDoes", new AjaxOptions
+    {
+        InsertionMode = InsertionMode.Replace,
+        HttpMethod = "POST",
+        UpdateTargetId = "ToDoTable"
+    }))
+    {
+    <div class="form-group">
+        @Html.AntiForgeryToken()
+        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    }
+</div>
 
 @section Scripts 
 {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/MyScripts/BuildTable.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
 }
