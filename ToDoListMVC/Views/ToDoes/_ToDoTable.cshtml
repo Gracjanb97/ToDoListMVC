@@ -1,5 +1,12 @@
 ﻿@model IEnumerable<ToDoListMVC.Models.ToDo>
 
+<div id="progressBarToDos">
+    <p>@(ViewBag.CompletedTaskPercentage)%</p>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width:@(Html.AttributeEncode(ViewBag.CompletedTaskPercentage))%"></div>
+    </div>
+</div>
+
 <table class="table">
     <tr>
         <th>
@@ -31,7 +38,6 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>
         </tr>

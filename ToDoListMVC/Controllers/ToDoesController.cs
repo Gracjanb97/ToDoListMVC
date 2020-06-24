@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -161,6 +162,13 @@ namespace ToDoListMVC.Controllers
             string currentUserId = User.Identity.GetUserId();
             var currentUser = _context.Users.FirstOrDefault(x => x.Id == currentUserId);
             var toDosList = _context.ToDos.ToList().Where(x => x.User == currentUser);
+
+            int completedTasksCount = 0;
+            foreach (var toDo in toDosList)
+                if (toDo.IsDone)
+                    completedTasksCount++;
+
+            ViewBag.CompletedTaskPercentage = Math.Round(100f * ((float)completedTasksCount / (float)toDosList.Count()));
 
             return toDosList;
         }
