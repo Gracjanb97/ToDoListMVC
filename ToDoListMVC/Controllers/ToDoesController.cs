@@ -30,19 +30,6 @@ namespace ToDoListMVC.Controllers
             return PartialView("_toDoTable", GetUserToDos());
         }
 
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            ToDo toDo = _context.ToDos.Find(id);
-
-            if (toDo == null)
-                return HttpNotFound();
-
-            return View(toDo);
-        }
-
         public ActionResult Create()
         {
             return View();
