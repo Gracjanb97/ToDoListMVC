@@ -15,7 +15,16 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @if (!item.IsDone)
+                {
+                    @Html.DisplayFor(modelItem => item.Description)
+                }
+                else
+                {
+                    <div class="CompletedToDo">
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </div>
+                }
             </td>
             <td>
                 @Html.CheckBoxFor(modelItem => item.IsDone, new { id = item.Id, @class = "ActiveCheck" })
