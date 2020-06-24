@@ -31,14 +31,13 @@ namespace ToDoListMVC.Controllers
         public ActionResult Details(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+
             ToDo toDo = _context.ToDos.Find(id);
+
             if (toDo == null)
-            {
                 return HttpNotFound();
-            }
+
             return View(toDo);
         }
 
@@ -84,14 +83,19 @@ namespace ToDoListMVC.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+
             ToDo toDo = _context.ToDos.Find(id);
+
             if (toDo == null)
-            {
                 return HttpNotFound();
-            }
+
+            string currentUserId = User.Identity.GetUserId();
+            var currentUser = _context.Users.FirstOrDefault(x => x.Id == currentUserId);
+
+            if (toDo.User != currentUser)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             return View(toDo);
         }
 
@@ -108,17 +112,36 @@ namespace ToDoListMVC.Controllers
             return View(toDo);
         }
 
+        [HttpPost]
+        public ActionResult AJAXEdit(int? id, bool value)
+        {
+            if (id == null)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var toDo = _context.ToDos.Find(id);
+
+            if (toDo == null)
+                return HttpNotFound();
+            else
+            {
+                toDo.IsDone = value;
+                _context.Entry(toDo).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+
+            return PartialView("_toDoTable", GetUserToDos());
+        }
+
         public ActionResult Delete(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+
             ToDo toDo = _context.ToDos.Find(id);
+
             if (toDo == null)
-            {
                 return HttpNotFound();
-            }
+
             return View(toDo);
         }
 
@@ -129,6 +152,7 @@ namespace ToDoListMVC.Controllers
             ToDo toDo = _context.ToDos.Find(id);
             _context.ToDos.Remove(toDo);
             _context.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
